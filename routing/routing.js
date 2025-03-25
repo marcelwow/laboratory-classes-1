@@ -14,3 +14,29 @@
 //  };
 
 // 🔧 Wyeksportuj funkcję 'requestRouting', aby inne moduł mogły jej używać.
+
+const homeRouting = require('./home');
+const productRouting = require('./product');
+const logoutRouting = require('./logout');
+const { STATUS_CODE } = require('../constants/statusCode');
+
+const requestRouting = (req, res) => {
+    const { url, method } = req;
+    console.log(`info [${new Date().toISOString()}]: ${method} - ${url}`);
+
+    if (url === '/') {
+        homeRouting(method, res);
+    } else if (url.startsWith('/product')) {
+        productRouting(url, method, res);
+    } else if (url === '/logout') {
+        logoutRouting(method, res);
+    } else if (url === '/kill') {
+        console.log(`PROCESS [${new Date().toISOString()}]: Nastąpiło wylogowanie ,  aplikacja została zamknięta.`);
+        process.exit();
+    } else {
+        console.error(`ERROR [${new Date().toISOString()}]: Strona ${url} nie istnieje.`);
+        res.writeHead(STATUS_CODE.NOT_FOUND);
+        res.end('<html><body><h1>404 - nie znaleziono strony</h1></body></html>');
+    }
+};
+module.exports = requestRouting;

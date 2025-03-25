@@ -12,3 +12,20 @@
 // Podpowiedź: response.setHeader("Location", "/product/new");
 
 // 🔧 Wyeksportuj funkcję 'productRouting', aby inne moduł mogły jej używać.
+const productRouting = (url, method, response) => {
+    response.writeHead(200, { 'Content-Type': 'text/html' });
+    if (url.includes('/product/add')) {
+        if (method === 'GET') {
+            response.end('<html><body><h1>Dodaj nowy produkt</h1></body></html>');
+        } else if (method === 'POST') {
+            response.end('<html><body><h1>Produkt dodany</h1></body></html>');
+        }
+    } else if (url.includes('/product/new')) {
+        response.end('<html><body><h1>Sprawdz nowe produkty</h1></body></html>');
+    } else {
+        console.error(`ERROR: Strona ${url} nie istnieje.`);
+        response.writeHead(STATUS_CODE.NOT_FOUND);
+        response.end('<html><body><h1>404 - Nie znaleziono strony</h1></body></html>');
+    }
+};
+module.exports = productRouting;
